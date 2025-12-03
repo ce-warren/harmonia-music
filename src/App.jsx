@@ -5,7 +5,7 @@ import "./App.css";
 const ACCESS_TOKEN = process.env.REACT_APP_ACCESS_TOKEN;
 const SHARED_LINK = process.env.REACT_APP_SHARED_LINK; // e.g. https://www.dropbox.com/scl/fo/...
 const SHARED_BASE = SHARED_LINK.split("?")[0]; // remove query string
-const API_BASE = "http://localhost:4000";
+const API_BASE = "/api";
 
 const App = () => {
   const [folders, setFolders] = useState([]);
