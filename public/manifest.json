@@ -1,9 +1,9 @@
 {
   "short_name": "Harmonia",
-  "name": "Harmonia Music",
+  "name": "Harmonia Music Library",
   "start_url": "/",
   "display": "standalone",
   "icons": [],
-  "background_color": "#ffffff",
+  "background_color": "#d32f2f",
   "theme_color": "#000000"
 }
