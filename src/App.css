@@ -1,93 +1,11 @@
-/* Container */
-.app-container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f9f9f9;
-}
-
-/* Header */
-h1 {
-  text-align: center;
-  color: #333;
-  margin-bottom: 20px;
-}
-
-/* Search bar */
-.search-bar {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.search-bar input {
-  flex: 1 1 250px;
-  padding: 8px 12px;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 16px;
-}
-
-.search-bar button {
-  padding: 8px 16px;
-  border: none;
-  background-color: #d32f2f;
-  color: white;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.search-bar button:hover {
-  background-color: #9a0007;
-}
-
-/* Tag filter */
-.tag-filter {
-  margin-bottom: 20px;
-}
-
-.tag-filter span {
-  font-weight: bold;
-  margin-right: 10px;
-}
-
-.tag-options {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 5px;
-}
-
-.tag-options button {
-  padding: 4px 10px;
-  border: 1px solid #d32f2f;
-  border-radius: 20px;
-  background-color: white;
-  color: #d32f2f;
-  cursor: pointer;
-  font-size: 14px;
-  transition: all 0.2s;
-}
-
-.tag-options button.tag-selected {
-  background-color: #d32f2f;
-  color: white;
-}
-
-/* Error message */
-.error {
-  color: gray;
-  text-align: center;
-  margin: 10px 0;
-}
-
-/* Folder list */
-.folders-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
-  gap: 20px;
-}
+.app-container { max-width:1100px; margin:20px auto; padding:16px; font-family:Arial, sans-serif; }
+h1 { text-align:center; color:#333; }
+.search-bar { display:flex; gap:8px; justify-content:center; margin-bottom:12px; }
+.search-bar input { padding:8px; border-radius:6px; border:1px solid #ccc; width:300px; }
+.search-bar button { background:#d32f2f; color:white; border:none; padding:8px 12px; border-radius:6px; cursor:pointer; }
+.tag-filter { margin-bottom:12px; }
+.tag-options { display:flex; gap:8px; flex-wrap:wrap; margin-top:6px; }
+.tag-options button { padding:4px 8px; border-radius:16px; border:1px solid #d32f2f; background:white; color:#d32f2f; cursor:pointer; }
+.tag-options button.tag-selected { background:#d32f2f; color:white; }
+.folders-list { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px; }
+.error { color:red; text-align:center; }

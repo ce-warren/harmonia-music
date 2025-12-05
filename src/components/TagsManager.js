@@ -1,107 +1,81 @@
-import React, { useState, useEffect, useRef } from "react";
-import "./TagsManager.css";
+import React, { useState, useEffect, useRef } from 'react';
+import './TagsManager.css';
 
-const API_BASE = "/api";
+const API_BASE = '/api';
 
 const TagsManager = ({ folderId, updateFolderTags, allTags }) => {
   const [tags, setTags] = useState([]);
-  const [newTag, setNewTag] = useState("");
+  const [newTag, setNewTag] = useState('');
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const wrapperRef = useRef(null);
 
-  // Fetch tags once on mount
   useEffect(() => {
-    let isMounted = true;
-
+    let mounted = true;
     const fetchTags = async () => {
       try {
-        const res = await fetch(`${API_BASE}/tags/${folderId}`);
-        if (!res.ok) throw new Error(`Failed to fetch tags: ${res.status}`);
+        const res = await fetch(`${API_BASE}/tags?folderId=${encodeURIComponent(folderId)}`);
+        if (!res.ok) throw new Error('Failed to load tags');
         const data = await res.json();
-        if (!isMounted) return;
+        if (!mounted) return;
         setTags(data.tags || []);
-        // Removed updateFolderTags here to avoid infinite loop
-      } catch (err) {
-        console.error("Error fetching tags:", err);
-        if (isMounted) setTags([]);
+        // Do not call updateFolderTags here to avoid loops
+      } catch (e) {
+        if (!mounted) return;
+        setTags([]);
       }
     };
-
     fetchTags();
-    return () => { isMounted = false; };
+    return () => { mounted = false; };
   }, [folderId]);
 
-  const saveTags = (updatedTags) => {
-    fetch(`${API_BASE}/tags/${folderId}`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ tags: updatedTags }),
-    }).catch(err => console.error("Error saving tags:", err));
-
-    updateFolderTags(folderId, updatedTags);
+  const saveTags = (updated) => {
+    setTags(updated);
+    fetch(`${API_BASE}/tags?folderId=${encodeURIComponent(folderId)}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ tags: updated })
+    }).catch(()=>{});
+    updateFolderTags(folderId, updated);
   };
 
-  const addTag = (tagToAdd) => {
-    const trimmedTag = tagToAdd.trim();
-    if (!trimmedTag || tags.includes(trimmedTag)) return;
-    const updated = [...tags, trimmedTag];
-    setTags(updated);
+  const addTag = (t) => {
+    const trimmed = t.trim();
+    if (!trimmed || tags.includes(trimmed)) return;
+    const updated = [...tags, trimmed];
     saveTags(updated);
-    setNewTag("");
+    setNewTag('');
     setDropdownVisible(false);
   };
 
-  const removeTag = (index) => {
-    const updated = tags.filter((_, i) => i !== index);
-    setTags(updated);
+  const removeTag = (idx) => {
+    const updated = tags.filter((_,i)=>i!==idx);
     saveTags(updated);
   };
 
-  const dropdownTags = allTags
-    .filter(tag => !tags.includes(tag))
-    .filter(tag => tag.toLowerCase().includes(newTag.toLowerCase()));
+  const dropdownTags = (allTags || []).filter(tag => !tags.includes(tag)).filter(tag => tag.toLowerCase().includes(newTag.toLowerCase()));
 
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (wrapperRef.current && !wrapperRef.current.contains(event.target)) {
-        setDropdownVisible(false);
-      }
+    const handler = (e) => {
+      if (wrapperRef.current && !wrapperRef.current.contains(e.target)) setDropdownVisible(false);
     };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handler);
+    return () => document.removeEventListener('mousedown', handler);
   }, []);
 
   return (
     <div className="tags-container" ref={wrapperRef}>
       <ul className="tags-list">
-        {tags.map((tag, index) => (
-          <li key={tag} className="tag-item">
-            {tag}
-            <button className="remove-tag-btn" onClick={() => removeTag(index)}>x</button>
-          </li>
+        {tags.map((tag, i) => (
+          <li key={tag} className="tag-item">{tag} <button onClick={()=>removeTag(i)}>x</button></li>
         ))}
       </ul>
 
-      <div className="tags-input" style={{ position: "relative" }}>
-        <input
-          type="text"
-          value={newTag}
-          onChange={e => {
-            setNewTag(e.target.value);
-            setDropdownVisible(true);
-          }}
-          placeholder="Add tag"
-          onFocus={() => setDropdownVisible(true)}
-        />
-        <button className="add-tag-btn" onMouseDown={() => addTag(newTag)}>Add</button>
-
-        {dropdownVisible && dropdownTags.length > 0 && (
+      <div className="tags-input" style={{position:'relative'}}>
+        <input value={newTag} placeholder="Add tag" onChange={e=>{setNewTag(e.target.value); setDropdownVisible(true);}} onFocus={()=>setDropdownVisible(true)} />
+        <button onMouseDown={()=>addTag(newTag)}>Add</button>
+        {dropdownVisible && dropdownTags.length>0 && (
           <ul className="tags-dropdown">
-            {dropdownTags.map(tag => (
-              <li key={tag} onMouseDown={() => addTag(tag)}>
-                {tag}
-              </li>
-            ))}
+            {dropdownTags.map(t=> <li key={t} onMouseDown={()=>addTag(t)}>{t}</li>)}
           </ul>
         )}
       </div>
